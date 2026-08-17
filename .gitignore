@@ -1,0 +1,6 @@
+# No generated payloads, local secrets, or editor files
+.env
+*.local
+.DS_Store
+.vscode/
+.idea/

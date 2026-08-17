@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hermes 一键安装器</title>
+<style>
+:root{color-scheme:dark;--bg:#08111f;--card:#101c2d;--line:#26364d;--txt:#e8eff9;--muted:#91a3ba;--brand:#7c9cff;--ok:#52d49a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#162747 0,transparent 42%),var(--bg);color:var(--txt);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(900px,92vw);margin:44px auto}.hero{text-align:center;margin-bottom:28px}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 10px}.hero p,.note{color:var(--muted)}.badge{display:inline-block;border:1px solid #365081;background:#14284b;color:#b9ceff;padding:5px 10px;border-radius:999px;font-size:13px}.card{background:rgba(16,28,45,.94);border:1px solid var(--line);box-shadow:0 20px 60px #0005;border-radius:18px;padding:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.full{grid-column:1/-1}label{font-size:13px;color:#bcc9da;display:block;margin:0 0 7px}input,select,textarea{width:100%;border:1px solid #32445d;background:#0b1524;color:var(--txt);padding:12px 13px;border-radius:10px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px #7c9cff22}.check{display:flex;align-items:center;gap:9px}.check input{width:auto}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--brand);color:#07101e}button.secondary{background:#263852;color:var(--txt)}textarea{min-height:130px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}.security{border-left:3px solid #f6be5a;padding:10px 13px;background:#f6be5a12;border-radius:6px;margin:18px 0}.status{color:var(--ok);min-height:22px;margin-top:10px}@media(max-width:680px){.grid{grid-template-columns:1fr}.wrap{margin:24px auto}.card{padding:18px}}
+</style></head>
+<body><main class="wrap"><section class="hero"><span class="badge">Hermes OneClick v1.0.0</span><h1>一条命令，部署 Hermes</h1><p>填写变量，在浏览器本地生成 VPS 安装命令。</p></section>
+<section class="card"><div class="grid">
+<div class="full"><label for="token">Telegram Bot Token *</label><input id="token" type="password" autocomplete="off" placeholder="123456789:AA..."></div>
+<div><label for="model">模型名称 *</label><input id="model" value="gpt-4.1-mini" placeholder="如 gpt-4.1-mini"></div>
+<div><label for="provider">Provider *</label><select id="provider"><option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option><option value="custom">自定义 OpenAI 兼容端点</option><option value="deepseek">DeepSeek</option><option value="anthropic">Anthropic</option></select></div>
+<div><label for="base">API Base URL</label><input id="base" placeholder="https://api.example.com/v1"></div>
+<div><label for="key">API Key</label><input id="key" type="password" autocomplete="off" placeholder="sk-..."></div>
+<div><label for="users">Telegram 允许用户 ID</label><input id="users" placeholder="123456789 或逗号分隔"></div>
+<div><label for="home">Telegram Home Channel</label><input id="home" placeholder="可选，聊天 ID"></div>
+<div class="full check"><input id="mention" type="checkbox"><label for="mention" style="margin:0">群聊中必须 @机器人 才响应</label></div>
+</div>
+<div class="security"><b>安全提示：</b>所有数据仅在本页面本地处理，不会上传。但 Base64 不是加密，生成命令含有你的密钥，并可能进入 VPS Shell 历史。</div>
+<div class="actions"><button id="generate">生成安装命令</button><button id="copy" class="secondary">复制命令</button><button id="clear" class="secondary">清空敏感字段</button></div>
+<p id="status" class="status"></p><label for="output">生成结果</label><textarea id="output" readonly placeholder="点击“生成安装命令”"></textarea>
+<p class="note">安装目标：Linux VPS。脚本使用 Hermes 官方安装器，配置 Gateway 并启动 Telegram Bot。</p></section></main>
+<script>
+const $=id=>document.getElementById(id);const repo='https://raw.githubusercontent.com/goldsonhwy/hermes-oneclick/main/install.sh';
+function b64Unicode(s){const bytes=new TextEncoder().encode(s);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
+$('generate').onclick=()=>{const p={telegram_token:$('token').value.trim(),model:$('model').value.trim(),provider:$('provider').value,base_url:$('base').value.trim(),api_key:$('key').value.trim(),telegram_allowed_users:$('users').value.trim(),telegram_home_channel:$('home').value.trim(),require_mention:$('mention').checked};if(!p.telegram_token||!p.model){$('status').textContent='请填写 Telegram Bot Token 和模型名称。';return}const payload=b64Unicode(JSON.stringify(p));$('output').value=`curl -fsSL ${repo} | bash -s -- '${payload}'`;$('status').textContent='安装命令已生成。请复制到 VPS 执行。'};
+$('copy').onclick=async()=>{if(!$('output').value)return $('generate').click();await navigator.clipboard.writeText($('output').value);$('status').textContent='已复制到剪贴板。'};
+$('clear').onclick=()=>{$('token').value='';$('key').value='';$('output').value='';$('status').textContent='敏感字段和生成结果已清空。'};
+</script></body></html>
