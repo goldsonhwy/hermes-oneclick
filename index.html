@@ -4,27 +4,232 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hermes 一键安装器</title>
 <style>
-:root{color-scheme:dark;--bg:#08111f;--card:#101c2d;--line:#26364d;--txt:#e8eff9;--muted:#91a3ba;--brand:#7c9cff;--ok:#52d49a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#162747 0,transparent 42%),var(--bg);color:var(--txt);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}.wrap{width:min(900px,92vw);margin:44px auto}.hero{text-align:center;margin-bottom:28px}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 10px}.hero p,.note{color:var(--muted)}.badge{display:inline-block;border:1px solid #365081;background:#14284b;color:#b9ceff;padding:5px 10px;border-radius:999px;font-size:13px}.card{background:rgba(16,28,45,.94);border:1px solid var(--line);box-shadow:0 20px 60px #0005;border-radius:18px;padding:24px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.full{grid-column:1/-1}label{font-size:13px;color:#bcc9da;display:block;margin:0 0 7px}input,select,textarea{width:100%;border:1px solid #32445d;background:#0b1524;color:var(--txt);padding:12px 13px;border-radius:10px;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px #7c9cff22}.check{display:flex;align-items:center;gap:9px}.check input{width:auto}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}button{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--brand);color:#07101e}button.secondary{background:#263852;color:var(--txt)}textarea{min-height:130px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}.security{border-left:3px solid #f6be5a;padding:10px 13px;background:#f6be5a12;border-radius:6px;margin:18px 0}.status{color:var(--ok);min-height:22px;margin-top:10px}@media(max-width:680px){.grid{grid-template-columns:1fr}.wrap{margin:24px auto}.card{padding:18px}}
+:root{color-scheme:dark;--bg:#08111f;--card:#101c2d;--line:#26364d;--txt:#e8eff9;--muted:#91a3ba;--brand:#7c9cff;--ok:#52d49a;--warn:#f6be5a;--red:#f87171;--radius:12px}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#162747 0,transparent 42%),var(--bg);color:var(--txt);font-family:Inter,ui-sans-serif,system-ui,sans-serif;padding:20px}.wrap{width:min(960px,94vw);margin:0 auto}.hero{text-align:center;margin:8px 0 24px}.hero h1{font-size:clamp(28px,4.5vw,48px);margin:0 0 8px}.hero p,.note{color:var(--muted)}.badge{display:inline-block;border:1px solid #365081;background:#14284b;color:#b9ceff;padding:4px 10px;border-radius:999px;font-size:13px}.card{background:rgba(16,28,45,.94);border:1px solid var(--line);box-shadow:0 20px 60px #0005;border-radius:18px;padding:24px;margin-bottom:16px}.card h2{font-size:15px;margin:0 0 14px;color:#bacaee;display:flex;align-items:center;gap:8px}.card h2 .badge-s{font-size:11px;border:1px solid #365081;background:#14284b;color:#b9ceff;padding:2px 7px;border-radius:999px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}label{font-size:12.5px;color:#bcc9da;display:block;margin:0 0 5px;font-weight:500}input,select,textarea{width:100%;border:1px solid #32445d;background:#0b1524;color:var(--txt);padding:11px 12px;border-radius:10px;outline:none;font-size:14px}input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px #7c9cff22}.check{display:flex;align-items:center;gap:8px;margin:6px 0}.check input{width:auto;margin:0}.ck{display:flex;flex-wrap:wrap;gap:8px 16px}.ck label{display:flex;align-items:center;gap:5px;font-weight:400;color:var(--txt);cursor:pointer}.ck input{width:auto}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 0}button{border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;background:var(--brand);color:#07101e;font-size:14px;transition:filter .15s}button:hover{filter:brightness(1.15)}button.sm{padding:6px 12px;font-size:12px}button.sec{background:#263852;color:var(--txt)}button.danger{background:#6b2a2a;color:#fca5a5}button:x{background:0 0;border:1px dashed #555;color:var(--muted)}.entry{border:1px solid #32445d;border-radius:10px;padding:14px;margin-bottom:10px;position:relative;background:#0b152470}.entry .del{position:absolute;top:10px;right:10px;background:0 0;border:0;color:var(--red);cursor:pointer;font-size:18px;padding:2px 6px;border-radius:6px}.entry .del:hover{background:#6b2a2a}.entry label{font-size:11.5px}.entry .grid2{grid-template-columns:1fr 1fr;gap:10px}.entry .grid3{grid-template-columns:1fr 1fr 1fr;gap:10px}textarea{min-height:110px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}.security{border-left:3px solid var(--warn);padding:10px 13px;background:#f6be5a12;border-radius:6px;margin:16px 0}.status{color:var(--ok);min-height:22px;margin-top:10px;font-size:14px}.tag{display:inline-block;background:#1e3350;color:#c2d6ff;padding:2px 8px;border-radius:6px;font-size:11px;margin:2px 0}.mt-2{margin-top:12px}@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}.wrap{width:100%}.card{padding:16px}.entry .grid2,.entry .grid3{grid-template-columns:1fr 1fr}}
 </style></head>
-<body><main class="wrap"><section class="hero"><span class="badge">Hermes OneClick v1.0.2</span><h1>一条命令，部署 Hermes</h1><p>填写变量，在浏览器本地生成 VPS 安装命令。</p></section>
-<section class="card"><div class="grid">
-<div class="full"><label for="token">Telegram Bot Token *</label><input id="token" type="password" autocomplete="off" placeholder="123456789:AA..."></div>
-<div><label for="model">模型名称 *</label><input id="model" value="gpt-4.1-mini" placeholder="如 gpt-4.1-mini"></div>
-<div><label for="provider">Provider *</label><select id="provider"><option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option><option value="custom">自定义 OpenAI 兼容端点</option><option value="deepseek">DeepSeek</option><option value="anthropic">Anthropic</option></select></div>
-<div><label for="base">API Base URL</label><input id="base" placeholder="https://api.example.com/v1"></div>
-<div><label for="key">API Key</label><input id="key" type="password" autocomplete="off" placeholder="sk-..."></div>
-<div><label for="users">Telegram 允许用户 ID</label><input id="users" placeholder="123456789 或逗号分隔"></div>
-<div><label for="home">Telegram Home Channel</label><input id="home" placeholder="可选，聊天 ID"></div>
+<body><main class="wrap"><section class="hero"><span class="badge">Hermes OneClick v1.1.0</span><h1>一条命令，部署 Hermes</h1><p>填写变量，在浏览器本地生成 VPS 安装命令。</p></section>
+
+<!-- Telegram 配置 -->
+<section class="card"><h2>📡 Telegram Bot 配置</h2>
+<div class="grid2">
+<div class="full"><label for="token">Bot Token *</label><input id="token" type="password" autocomplete="off" placeholder="123456789:AA..."></div>
+<div><label for="users">允许用户 ID</label><input id="users" placeholder="123456789（可选）"></div>
+<div><label for="home">Home Channel</label><input id="home" placeholder="聊天 ID（可选）"></div>
 <div class="full check"><input id="mention" type="checkbox"><label for="mention" style="margin:0">群聊中必须 @机器人 才响应</label></div>
-</div>
-<div class="security"><b>安全提示：</b>所有数据仅在本页面本地处理，不会上传。但 Base64 不是加密，生成命令含有你的密钥，并可能进入 VPS Shell 历史。</div>
-<div class="actions"><button id="generate">生成安装命令</button><button id="copy" class="secondary">复制命令</button><button id="clear" class="secondary">清空敏感字段</button></div>
-<p id="status" class="status"></p><label for="output">生成结果</label><textarea id="output" readonly placeholder="点击“生成安装命令”"></textarea>
-<p class="note">安装目标：Linux VPS。脚本使用 Hermes 官方安装器，配置 Gateway 并启动 Telegram Bot。</p></section></main>
+</div></section>
+
+<!-- 主要模型 -->
+<section class="card"><h2>🧠 主要模型 <span class="tag">默认模型</span></h2>
+<div class="grid2">
+<div><label for="pmodel">模型名称 *</label>
+<select id="pmodel"><option value="deepseek-v4-flash">deepseek-v4-flash</option>
+<option value="gpt-5.6-sol">gpt-5.6-sol</option><option value="gpt-5.6-ultra">gpt-5.6-ultra</option>
+<option value="gpt-5.5-turbo">gpt-5.5-turbo</option><option value="gpt-5.5-mini">gpt-5.5-mini</option>
+<option value="claude-sonnet-4">claude-sonnet-4</option><option value="claude-opus-4">claude-opus-4</option>
+<option value="claude-4-haiku">claude-4-haiku</option><option value="gemini-3.0-pro">gemini-3.0-pro</option>
+<option value="gemini-3.0-flash">gemini-3.0-flash</option><option value="llama-5-70b">llama-5-70b</option>
+<option value="qwen-4-72b">qwen-4-72b</option><option value="mistral-large-4">mistral-large-4</option>
+<option value="grok-4">grok-4</option><option value="__custom__">✏️ 自定义输入...</option></select></div>
+<div><label for="cmodel">自定义模型名称</label><input id="cmodel" placeholder="选择「自定义输入...」后在此填写" disabled></div>
+<div><label for="pprovider">Provider *</label>
+<select id="pprovider"><option value="custom">自定义 OpenAI 兼容</option>
+<option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option>
+<option value="anthropic">Anthropic</option><option value="deepseek">DeepSeek</option>
+<option value="google">Google Gemini</option><option value="xai">xAI / Grok</option>
+<option value="groq">Groq</option></select></div>
+<div><label for="pbase">API Base URL</label><input id="pbase" placeholder="https://api.example.com/v1"></div>
+<div class="full"><label for="pkey">API Key</label><input id="pkey" type="password" autocomplete="off" placeholder="sk-..."></div>
+</div></section>
+
+<!-- 回退 Provider -->
+<section class="card"><h2>🔄 回退 Provider <span class="tag">fallback</span></h2>
+<p style="color:var(--muted);font-size:13px;margin:0 0 10px">主模型不可用时自动切换的 Provider。</p>
+<div class="ck" id="fallbackCk"></div></section>
+
+<!-- 附加端点 -->
+<section class="card"><h2>🔗 附加端点 <span class="tag">备用模型</span></h2>
+<p style="color:var(--muted);font-size:13px;margin:0 0 10px">添加额外的模型/端点，会写入 Hermes 自定义 Provider。</p>
+<div id="extraContainer"></div>
+<button class="sm" id="addExtra" style="margin-top:4px">+ 添加端点</button></section>
+
+<!-- 输出 -->
+<section class="card"><h2>📋 生成安装命令</h2>
+<div class="security"><b>安全提示：</b>所有数据仅在本页面本地处理，不会上传。Base64 不是加密，生成的命令含有你的密钥，可能进入 VPS Shell 历史。</div>
+<div class="actions"><button id="generate">🚀 生成安装命令</button><button id="copy" class="sec">📋 复制命令</button><button id="clear" class="danger">🗑 清空敏感字段</button></div>
+<p id="status" class="status"></p>
+<label for="output">生成结果</label><textarea id="output" readonly placeholder="点击「生成安装命令」"></textarea>
+<p class="note">安装目标：Linux VPS。脚本自动安装 python3、Hermes、配置 Gateway 并启动 Telegram Bot。</p></section></main>
+
 <script>
-const $=id=>document.getElementById(id);const repo='https://raw.githubusercontent.com/goldsonhwy/hermes-oneclick/main/install.sh';
-function b64Unicode(s){const bytes=new TextEncoder().encode(s);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}
-$('generate').onclick=()=>{const p={telegram_token:$('token').value.trim(),model:$('model').value.trim(),provider:$('provider').value,base_url:$('base').value.trim(),api_key:$('key').value.trim(),telegram_allowed_users:$('users').value.trim(),telegram_home_channel:$('home').value.trim(),require_mention:$('mention').checked};if(!p.telegram_token||!p.model){$('status').textContent='请填写 Telegram Bot Token 和模型名称。';return}const payload=b64Unicode(JSON.stringify(p));$('output').value=`curl -fsSL ${repo} | bash -s -- '${payload}'`;$('status').textContent='安装命令已生成。请复制到 VPS 执行。'};
-$('copy').onclick=async()=>{if(!$('output').value)return $('generate').click();await navigator.clipboard.writeText($('output').value);$('status').textContent='已复制到剪贴板。'};
-$('clear').onclick=()=>{$('token').value='';$('key').value='';$('output').value='';$('status').textContent='敏感字段和生成结果已清空。'};
+// ── 预设数据 ──
+const MODELS = [
+  'deepseek-v4-flash','gpt-5.6-sol','gpt-5.6-ultra','gpt-5.5-turbo','gpt-5.5-mini',
+  'claude-sonnet-4','claude-opus-4','claude-4-haiku','gemini-3.0-pro','gemini-3.0-flash',
+  'llama-5-70b','qwen-4-72b','mistral-large-4','grok-4'
+];
+const PROVIDERS = ['custom','openai','openrouter','anthropic','deepseek','google','xai','groq'];
+const FALLBACK_OPTIONS = [
+  {id:'openrouter',label:'OpenRouter'},{id:'openai',label:'OpenAI'},
+  {id:'anthropic',label:'Anthropic'},{id:'deepseek',label:'DeepSeek'},
+  {id:'google',label:'Google Gemini'},{id:'xai',label:'xAI / Grok'},
+  {id:'groq',label:'Groq'},{id:'custom',label:'自定义'}
+];
+
+// ── DOM refs ──
+const $=id=>document.getElementById(id);
+const token=$('token'), users=$('users'), home=$('home'), mention=$('mention');
+const pmodel=$('pmodel'), cmodel=$('cmodel'), pprovider=$('pprovider'), pbase=$('pbase'), pkey=$('pkey');
+const fallbackCk=$('fallbackCk'), extraContainer=$('extraContainer'), addExtra=$('addExtra');
+const generate=$('generate'), copy=$('copy'), clear=$('clear'), status=$('status'), output=$('output');
+
+// ── localStorage key ──
+const LS_KEY = 'hermes-oneclick-config';
+
+// ── 渲染回退 Provider 复选框 ──
+function renderFallback() {
+  fallbackCk.innerHTML = FALLBACK_OPTIONS.map(f =>
+    `<label><input type="checkbox" class="fb" value="${f.id}"> ${f.label}</label>`
+  ).join('');
+}
+renderFallback();
+
+// ── 附加端点管理 ──
+let extraCount = 0;
+function addExtraEntry(name='', provider='custom', baseUrl='', apiKey='') {
+  const idx = extraCount++;
+  const div = document.createElement('div');
+  div.className = 'entry';
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <button class="del" data-idx="${idx}" title="删除此端点">✕</button>
+    <div class="grid2">
+      <div><label>名称</label><input class="ex-name" value="${escHtml(name)}" placeholder="如 备选-1"></div>
+      <div><label>Provider</label>
+        <select class="ex-provider">${PROVIDERS.map(p => `<option value="${p}"${p===provider?' selected':''}>${p}</option>`).join('')}</select></div>
+      <div><label>API Base URL</label><input class="ex-base" value="${escHtml(baseUrl)}" placeholder="https://..."></div>
+      <div><label>API Key</label><input class="ex-key" type="password" value="${escHtml(apiKey)}" placeholder="sk-..." autocomplete="off"></div>
+    </div>`;
+  div.querySelector('.del').onclick = () => { div.remove(); saveState(); };
+  // 任何输入变化都保存
+  div.querySelectorAll('input,select').forEach(el => el.addEventListener('change', saveState));
+  div.querySelectorAll('input').forEach(el => el.addEventListener('input', saveState));
+  extraContainer.appendChild(div);
+  saveState();
+}
+
+addExtra.onclick = () => addExtraEntry();
+
+// ── 工具 ──
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function b64Unicode(s) { const bytes=new TextEncoder().encode(s); let bin=''; for(const b of bytes) bin+=String.fromCharCode(b); return btoa(bin); }
+
+// ── 获取全部表单数据 ──
+function getFormState() {
+  // 模型名称
+  let modelName = pmodel.value;
+  if (modelName === '__custom__') modelName = cmodel.value.trim();
+  // 回退
+  const fallbacks = Array.from(document.querySelectorAll('.fb:checked')).map(cb => cb.value);
+  // 附加端点
+  const extras = [];
+  extraContainer.querySelectorAll('.entry').forEach(el => {
+    const name = el.querySelector('.ex-name').value.trim();
+    const provider = el.querySelector('.ex-provider').value;
+    const base = el.querySelector('.ex-base').value.trim();
+    const key = el.querySelector('.ex-key').value.trim();
+    if (name) extras.push({name,provider,base_url:base,api_key:key});
+  });
+  return {
+    telegram_token: token.value.trim(),
+    telegram_allowed_users: users.value.trim(),
+    telegram_home_channel: home.value.trim(),
+    require_mention: mention.checked,
+    model: modelName,
+    provider: pprovider.value,
+    base_url: pbase.value.trim(),
+    api_key: pkey.value.trim(),
+    fallback_providers: fallbacks,
+    extra_endpoints: extras
+  };
+}
+
+// ── 保存/恢复状态 ──
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(getFormState())); } catch(e) {}
+}
+function restoreState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    token.value = s.telegram_token || '';
+    users.value = s.telegram_allowed_users || '';
+    home.value = s.telegram_home_channel || '';
+    mention.checked = !!s.require_mention;
+    // 模型
+    if (s.model && MODELS.includes(s.model)) {
+      pmodel.value = s.model;
+    } else if (s.model) {
+      pmodel.value = '__custom__';
+      cmodel.value = s.model;
+      cmodel.disabled = false;
+    }
+    pprovider.value = s.provider || 'custom';
+    pbase.value = s.base_url || '';
+    pkey.value = s.api_key || '';
+    // 回退
+    if (s.fallback_providers && Array.isArray(s.fallback_providers)) {
+      document.querySelectorAll('.fb').forEach(cb => {
+        cb.checked = s.fallback_providers.includes(cb.value);
+      });
+    }
+    // 附加端点
+    if (s.extra_endpoints && Array.isArray(s.extra_endpoints)) {
+      s.extra_endpoints.forEach(e => addExtraEntry(e.name, e.provider, e.base_url, e.api_key));
+    }
+  } catch(e) { /* ignore corrupt state */ }
+}
+
+// ── 模型下拉切换 ──
+pmodel.onchange = () => {
+  const isCustom = pmodel.value === '__custom__';
+  cmodel.disabled = !isCustom;
+  if (!isCustom) cmodel.value = '';
+  saveState();
+};
+cmodel.oninput = saveState;
+
+// ── 所有表单字段自动保存 ──
+document.querySelectorAll('input,select').forEach(el => {
+  el.addEventListener('input', saveState);
+  el.addEventListener('change', saveState);
+});
+
+// ── 生成命令 ──
+const INSTALL_SH_URL = 'https://raw.githubusercontent.com/goldsonhwy/hermes-oneclick/main/install.sh';
+
+generate.onclick = () => {
+  const s = getFormState();
+  if (!s.telegram_token) { status.textContent = '请填写 Telegram Bot Token。'; return; }
+  if (!s.model) { status.textContent = '请填写或选择模型名称。'; return; }
+  const payload = b64Unicode(JSON.stringify(s));
+  output.value = `curl -fsSL ${INSTALL_SH_URL} | bash -s -- '${payload}'`;
+  status.textContent = '✅ 安装命令已生成。请复制到 VPS 执行。';
+};
+
+copy.onclick = async () => {
+  if (!output.value) { generate.click(); return; }
+  await navigator.clipboard.writeText(output.value);
+  status.textContent = '✅ 已复制到剪贴板。';
+};
+
+clear.onclick = () => {
+  token.value = ''; pkey.value = '';
+  document.querySelectorAll('.ex-key').forEach(el => el.value = '');
+  output.value = '';
+  status.textContent = '🗑 敏感字段已清空。';
+  saveState();
+};
+
+// ── 启动时恢复 ──
+restoreState();
 </script></body></html>

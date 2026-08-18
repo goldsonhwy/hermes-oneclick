@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.0.2"
+VERSION="1.1.0"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
@@ -101,11 +101,33 @@ os.chmod(env_path,0o600)
 def cfg(key,value):
     if value is None or value=='': return
     subprocess.run(['hermes','config','set',key,str(value)],check=True)
-cfg('model.default',p['model'])
-cfg('model.provider',p['provider'])
+
+# 主模型
+cfg('model.default',p.get('model') or p.get('primary_model',''))
+cfg('model.provider',p.get('provider') or p.get('primary_provider','custom'))
 if p.get('base_url'): cfg('model.base_url',p['base_url'].rstrip('/'))
 if p.get('api_key'): cfg('model.api_key',p['api_key'])
 cfg('telegram.require_mention',str(bool(p.get('require_mention',False))).lower())
+
+# 回退 Provider
+fallbacks = p.get('fallback_providers', [])
+if isinstance(fallbacks, list) and fallbacks:
+    cfg('fallback_providers', json.dumps(fallbacks, ensure_ascii=False))
+
+# 附加端点 -> 写入 custom_providers
+extras = p.get('extra_endpoints', [])
+if isinstance(extras, list) and extras:
+    custom = []
+    for i, ep in enumerate(extras):
+        if ep.get('name'):
+            custom.append({
+                'name': ep['name'],
+                'base_url': ep.get('base_url','').rstrip('/'),
+                'api_key': ep.get('api_key',''),
+            })
+    if custom:
+        cfg('custom_providers', json.dumps(custom, ensure_ascii=False))
+
 print('配置已写入',home)
 PY
 

@@ -11,6 +11,13 @@
 3. 复制命令到 Ubuntu/Debian/CentOS 等 Linux VPS，以目标用户身份执行。
 4. 安装脚本会安装 Hermes、写入配置、安装并启动 Gateway 服务，并执行健康检查。
 
+## 功能
+
+- **多端点支持** — 主模型 + 多个附加端点，自动写入自定义 Provider
+- **回退 Provider** — 设置备用 Provider，主模型不可用时自动切换
+- **2026+ 常用模型列表** — 预置 deepseek-v4-flash、gpt-5.6-sol、claude-sonnet-4 等
+- **表单持久化** — 刷新页面自动恢复填写内容
+
 ## 安全说明
 
 - WebUI 是纯静态页面，数据只在浏览器本地处理，不会上传到服务器。
@@ -34,7 +41,7 @@ python3 tests/test_payload.py
 
 ## 版本
 
-当前版本：**v1.0.2**
+当前版本：**v1.1.0**
 
 ## 上游
 
