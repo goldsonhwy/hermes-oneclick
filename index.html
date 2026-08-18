@@ -6,7 +6,7 @@
 <style>
 :root{color-scheme:dark;--bg:#08111f;--card:#101c2d;--line:#26364d;--txt:#e8eff9;--muted:#91a3ba;--brand:#7c9cff;--ok:#52d49a;--warn:#f6be5a;--red:#f87171;--radius:12px}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#162747 0,transparent 42%),var(--bg);color:var(--txt);font-family:Inter,ui-sans-serif,system-ui,sans-serif;padding:20px}.wrap{width:min(960px,94vw);margin:0 auto}.hero{text-align:center;margin:8px 0 24px}.hero h1{font-size:clamp(28px,4.5vw,48px);margin:0 0 8px}.hero p,.note{color:var(--muted)}.badge{display:inline-block;border:1px solid #365081;background:#14284b;color:#b9ceff;padding:4px 10px;border-radius:999px;font-size:13px}.card{background:rgba(16,28,45,.94);border:1px solid var(--line);box-shadow:0 20px 60px #0005;border-radius:18px;padding:24px;margin-bottom:16px}.card h2{font-size:15px;margin:0 0 14px;color:#bacaee;display:flex;align-items:center;gap:8px}.card h2 .badge-s{font-size:11px;border:1px solid #365081;background:#14284b;color:#b9ceff;padding:2px 7px;border-radius:999px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}label{font-size:12.5px;color:#bcc9da;display:block;margin:0 0 5px;font-weight:500}input,select,textarea{width:100%;border:1px solid #32445d;background:#0b1524;color:var(--txt);padding:11px 12px;border-radius:10px;outline:none;font-size:14px}input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px #7c9cff22}.check{display:flex;align-items:center;gap:8px;margin:6px 0}.check input{width:auto;margin:0}.ck{display:flex;flex-wrap:wrap;gap:8px 16px}.ck label{display:flex;align-items:center;gap:5px;font-weight:400;color:var(--txt);cursor:pointer}.ck input{width:auto}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 0}button{border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;background:var(--brand);color:#07101e;font-size:14px;transition:filter .15s}button:hover{filter:brightness(1.15)}button.sm{padding:6px 12px;font-size:12px}button.sec{background:#263852;color:var(--txt)}button.danger{background:#6b2a2a;color:#fca5a5}button:x{background:0 0;border:1px dashed #555;color:var(--muted)}.entry{border:1px solid #32445d;border-radius:10px;padding:14px;margin-bottom:10px;position:relative;background:#0b152470}.entry .del{position:absolute;top:10px;right:10px;background:0 0;border:0;color:var(--red);cursor:pointer;font-size:18px;padding:2px 6px;border-radius:6px}.entry .del:hover{background:#6b2a2a}.entry label{font-size:11.5px}.entry .grid2{grid-template-columns:1fr 1fr;gap:10px}.entry .grid3{grid-template-columns:1fr 1fr 1fr;gap:10px}textarea{min-height:110px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}.security{border-left:3px solid var(--warn);padding:10px 13px;background:#f6be5a12;border-radius:6px;margin:16px 0}.status{color:var(--ok);min-height:22px;margin-top:10px;font-size:14px}.tag{display:inline-block;background:#1e3350;color:#c2d6ff;padding:2px 8px;border-radius:6px;font-size:11px;margin:2px 0}.mt-2{margin-top:12px}@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}.wrap{width:100%}.card{padding:16px}.entry .grid2,.entry .grid3{grid-template-columns:1fr 1fr}}
 </style></head>
-<body><main class="wrap"><section class="hero"><span class="badge">Hermes OneClick v1.1.0</span><h1>一条命令，部署 Hermes</h1><p>填写变量，在浏览器本地生成 VPS 安装命令。</p></section>
+<body><main class="wrap"><section class="hero"><span class="badge">Hermes OneClick v1.2.0</span><h1>一条命令，部署 Hermes</h1><p>填写变量，在浏览器本地生成 VPS 安装命令。</p></section>
 
 <!-- Telegram 配置 -->
 <section class="card"><h2>📡 Telegram Bot 配置</h2>
@@ -22,28 +22,29 @@
 <div class="grid2">
 <div><label for="pmodel">模型名称 *</label>
 <select id="pmodel"><option value="deepseek-v4-flash">deepseek-v4-flash</option>
-<option value="gpt-5.6-sol">gpt-5.6-sol</option><option value="gpt-5.6-ultra">gpt-5.6-ultra</option>
-<option value="gpt-5.5-turbo">gpt-5.5-turbo</option><option value="gpt-5.5-mini">gpt-5.5-mini</option>
-<option value="claude-sonnet-4">claude-sonnet-4</option><option value="claude-opus-4">claude-opus-4</option>
-<option value="claude-4-haiku">claude-4-haiku</option><option value="gemini-3.0-pro">gemini-3.0-pro</option>
-<option value="gemini-3.0-flash">gemini-3.0-flash</option><option value="llama-5-70b">llama-5-70b</option>
-<option value="qwen-4-72b">qwen-4-72b</option><option value="mistral-large-4">mistral-large-4</option>
-<option value="grok-4">grok-4</option><option value="__custom__">✏️ 自定义输入...</option></select></div>
+<option value="deepseek-v4-pro">deepseek-v4-pro</option>
+<option value="gpt-5.5">gpt-5.5</option>
+<option value="gpt-5.6">gpt-5.6</option>
+<option value="gpt-5.6-luna">gpt-5.6-luna</option>
+<option value="gpt-5.6-sol">gpt-5.6-sol</option>
+<option value="gpt-5.6-terra">gpt-5.6-terra</option>
+<option value="grok-4.5">grok-4.5</option>
+<option value="grok-4.6">grok-4.6</option>
+<option value="gemini-2.5-flash">gemini-2.5-flash</option>
+<option value="gemini-3.5-flash">gemini-3.5-flash</option>
+<option value="minimax-m3">minimax-m3</option>
+<option value="glm-5.2">glm-5.2</option>
+<option value="kimi-k2.5">kimi-k2.5</option>
+<option value="kimi-k2.6">kimi-k2.6</option>
+<option value="claude-fable-5">claude-fable-5</option>
+<option value="claude-opus-4-6">claude-opus-4-6</option>
+<option value="__custom__">✏️ 自定义输入...</option></select></div>
 <div><label for="cmodel">自定义模型名称</label><input id="cmodel" placeholder="选择「自定义输入...」后在此填写" disabled></div>
 <div><label for="pprovider">Provider *</label>
-<select id="pprovider"><option value="custom">自定义 OpenAI 兼容</option>
-<option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option>
-<option value="anthropic">Anthropic</option><option value="deepseek">DeepSeek</option>
-<option value="google">Google Gemini</option><option value="xai">xAI / Grok</option>
-<option value="groq">Groq</option></select></div>
+<select id="pprovider" disabled><option value="custom" selected>自定义 OpenAI 兼容</option></select></div>
 <div><label for="pbase">API Base URL</label><input id="pbase" placeholder="https://api.example.com/v1"></div>
 <div class="full"><label for="pkey">API Key</label><input id="pkey" type="password" autocomplete="off" placeholder="sk-..."></div>
 </div></section>
-
-<!-- 回退 Provider -->
-<section class="card"><h2>🔄 回退 Provider <span class="tag">fallback</span></h2>
-<p style="color:var(--muted);font-size:13px;margin:0 0 10px">主模型不可用时自动切换的 Provider。</p>
-<div class="ck" id="fallbackCk"></div></section>
 
 <!-- 附加端点 -->
 <section class="card"><h2>🔗 附加端点 <span class="tag">备用模型</span></h2>
@@ -62,35 +63,19 @@
 <script>
 // ── 预设数据 ──
 const MODELS = [
-  'deepseek-v4-flash','gpt-5.6-sol','gpt-5.6-ultra','gpt-5.5-turbo','gpt-5.5-mini',
-  'claude-sonnet-4','claude-opus-4','claude-4-haiku','gemini-3.0-pro','gemini-3.0-flash',
-  'llama-5-70b','qwen-4-72b','mistral-large-4','grok-4'
+  'deepseek-v4-flash','deepseek-v4-pro','gpt-5.5','gpt-5.6','gpt-5.6-luna','gpt-5.6-sol','gpt-5.6-terra',
+  'grok-4.5','grok-4.6','gemini-2.5-flash','gemini-3.5-flash','minimax-m3','glm-5.2','kimi-k2.5','kimi-k2.6','claude-fable-5','claude-opus-4-6'
 ];
-const PROVIDERS = ['custom','openai','openrouter','anthropic','deepseek','google','xai','groq'];
-const FALLBACK_OPTIONS = [
-  {id:'openrouter',label:'OpenRouter'},{id:'openai',label:'OpenAI'},
-  {id:'anthropic',label:'Anthropic'},{id:'deepseek',label:'DeepSeek'},
-  {id:'google',label:'Google Gemini'},{id:'xai',label:'xAI / Grok'},
-  {id:'groq',label:'Groq'},{id:'custom',label:'自定义'}
-];
-
+const PROVIDERS = ['custom'];
 // ── DOM refs ──
 const $=id=>document.getElementById(id);
 const token=$('token'), users=$('users'), home=$('home'), mention=$('mention');
 const pmodel=$('pmodel'), cmodel=$('cmodel'), pprovider=$('pprovider'), pbase=$('pbase'), pkey=$('pkey');
-const fallbackCk=$('fallbackCk'), extraContainer=$('extraContainer'), addExtra=$('addExtra');
+const extraContainer=$('extraContainer'), addExtra=$('addExtra');
 const generate=$('generate'), copy=$('copy'), clear=$('clear'), status=$('status'), output=$('output');
 
 // ── localStorage key ──
 const LS_KEY = 'hermes-oneclick-config';
-
-// ── 渲染回退 Provider 复选框 ──
-function renderFallback() {
-  fallbackCk.innerHTML = FALLBACK_OPTIONS.map(f =>
-    `<label><input type="checkbox" class="fb" value="${f.id}"> ${f.label}</label>`
-  ).join('');
-}
-renderFallback();
 
 // ── 附加端点管理 ──
 let extraCount = 0;
@@ -127,8 +112,6 @@ function getFormState() {
   // 模型名称
   let modelName = pmodel.value;
   if (modelName === '__custom__') modelName = cmodel.value.trim();
-  // 回退
-  const fallbacks = Array.from(document.querySelectorAll('.fb:checked')).map(cb => cb.value);
   // 附加端点
   const extras = [];
   extraContainer.querySelectorAll('.entry').forEach(el => {
@@ -147,7 +130,6 @@ function getFormState() {
     provider: pprovider.value,
     base_url: pbase.value.trim(),
     api_key: pkey.value.trim(),
-    fallback_providers: fallbacks,
     extra_endpoints: extras
   };
 }
@@ -176,12 +158,6 @@ function restoreState() {
     pprovider.value = s.provider || 'custom';
     pbase.value = s.base_url || '';
     pkey.value = s.api_key || '';
-    // 回退
-    if (s.fallback_providers && Array.isArray(s.fallback_providers)) {
-      document.querySelectorAll('.fb').forEach(cb => {
-        cb.checked = s.fallback_providers.includes(cb.value);
-      });
-    }
     // 附加端点
     if (s.extra_endpoints && Array.isArray(s.extra_endpoints)) {
       s.extra_endpoints.forEach(e => addExtraEntry(e.name, e.provider, e.base_url, e.api_key));

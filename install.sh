@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.1.0"
+VERSION="1.2.0"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
@@ -108,11 +108,6 @@ cfg('model.provider',p.get('provider') or p.get('primary_provider','custom'))
 if p.get('base_url'): cfg('model.base_url',p['base_url'].rstrip('/'))
 if p.get('api_key'): cfg('model.api_key',p['api_key'])
 cfg('telegram.require_mention',str(bool(p.get('require_mention',False))).lower())
-
-# 回退 Provider
-fallbacks = p.get('fallback_providers', [])
-if isinstance(fallbacks, list) and fallbacks:
-    cfg('fallback_providers', json.dumps(fallbacks, ensure_ascii=False))
 
 # 附加端点 -> 写入 custom_providers
 extras = p.get('extra_endpoints', [])
