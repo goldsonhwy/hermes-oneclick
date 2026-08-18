@@ -34,7 +34,7 @@ python3 tests/test_payload.py
 
 ## 版本
 
-当前版本：**v1.0.1**
+当前版本：**v1.0.2**
 
 ## 上游
 

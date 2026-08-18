@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.0.1"
+VERSION="1.0.2"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
@@ -13,7 +13,7 @@ PAYLOAD_B64="${1:-}"
 command -v curl >/dev/null || fail "需要 curl，请先安装 curl。"
 command -v base64 >/dev/null || fail "需要 base64（coreutils）。"
 
-# 解码 Base64 载荷，用 shell 工具做基本校验
+# 解码 Base64 载荷
 TMP_PAYLOAD="$(mktemp)"
 cleanup() { rm -f "$TMP_PAYLOAD"; unset PAYLOAD_B64; }
 trap cleanup EXIT
@@ -21,19 +21,35 @@ printf '%s' "$PAYLOAD_B64" | base64 -d > "$TMP_PAYLOAD" 2>/dev/null || fail "配
 unset PAYLOAD_B64
 chmod 600 "$TMP_PAYLOAD"
 
-# 校验 JSON 格式（只需 python3 或 jq 其一，但后面会装 python3，所以先用 grep 粗略检查）
-if ! grep -q '"telegram_token"' "$TMP_PAYLOAD" 2>/dev/null; then
-  fail "配置缺少 telegram_token，请从 WebUI 重新生成。"
-fi
-if ! grep -q '"model"' "$TMP_PAYLOAD" 2>/dev/null; then
-  fail "配置缺少 model，请从 WebUI 重新生成。"
-fi
-if ! grep -q '"provider"' "$TMP_PAYLOAD" 2>/dev/null; then
-  fail "配置缺少 provider，请从 WebUI 重新生成。"
+# 先校验 JSON 包含必要字段（使用 shell 工具，无需 python3）
+grep -q '"telegram_token"' "$TMP_PAYLOAD" 2>/dev/null || fail "配置缺少 telegram_token"
+grep -q '"model"' "$TMP_PAYLOAD" 2>/dev/null || fail "配置缺少 model"
+grep -q '"provider"' "$TMP_PAYLOAD" 2>/dev/null || fail "配置缺少 provider"
+
+# 确保 Python 3 存在（Hermes 官方安装器依赖 python3）
+install_python3() {
+  if command -v apt-get >/dev/null 2>&1; then
+    apt-get update -qq && apt-get install -y -qq python3 python3-pip
+  elif command -v yum >/dev/null 2>&1; then
+    yum install -y python3 python3-pip
+  elif command -v dnf >/dev/null 2>&1; then
+    dnf install -y python3 python3-pip
+  elif command -v apk >/dev/null 2>&1; then
+    apk add --no-cache python3 py3-pip
+  elif command -v pkg >/dev/null 2>&1; then
+    pkg install -y python3
+  else
+    fail "无法自动安装 python3，请手动安装后重试。"
+  fi
+}
+if ! command -v python3 >/dev/null; then
+  info "系统未安装 python3，正在自动安装..."
+  install_python3
+  command -v python3 >/dev/null || fail "python3 安装失败，请手动安装。"
+  ok "python3 已安装。"
 fi
 
 info "安装 Hermes Agent（OneClick v${VERSION}）..."
-# 官方安装器通过 uv 自动安装 Python 3.11，无需系统预装 python3
 curl -fsSL "$OFFICIAL_INSTALLER" | bash -s -- --skip-setup
 
 # 刷新 PATH：官方安装器会把 hermes 和 uv 安装到 $HOME/.local/bin
