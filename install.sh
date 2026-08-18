@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
@@ -13,6 +13,7 @@ PAYLOAD_B64="${1:-}"
 command -v curl >/dev/null || fail "需要 curl，请先安装 curl。"
 command -v base64 >/dev/null || fail "需要 base64（coreutils）。"
 
+# 解码 Base64 载荷，用 shell 工具做基本校验
 TMP_PAYLOAD="$(mktemp)"
 cleanup() { rm -f "$TMP_PAYLOAD"; unset PAYLOAD_B64; }
 trap cleanup EXIT
@@ -20,8 +21,30 @@ printf '%s' "$PAYLOAD_B64" | base64 -d > "$TMP_PAYLOAD" 2>/dev/null || fail "配
 unset PAYLOAD_B64
 chmod 600 "$TMP_PAYLOAD"
 
-# Validate before changing the system. Python 3 is required by Hermes itself.
-command -v python3 >/dev/null || fail "需要 Python 3.11+。请先安装 python3，或使用官方安装器支持的系统。"
+# 校验 JSON 格式（只需 python3 或 jq 其一，但后面会装 python3，所以先用 grep 粗略检查）
+if ! grep -q '"telegram_token"' "$TMP_PAYLOAD" 2>/dev/null; then
+  fail "配置缺少 telegram_token，请从 WebUI 重新生成。"
+fi
+if ! grep -q '"model"' "$TMP_PAYLOAD" 2>/dev/null; then
+  fail "配置缺少 model，请从 WebUI 重新生成。"
+fi
+if ! grep -q '"provider"' "$TMP_PAYLOAD" 2>/dev/null; then
+  fail "配置缺少 provider，请从 WebUI 重新生成。"
+fi
+
+info "安装 Hermes Agent（OneClick v${VERSION}）..."
+# 官方安装器通过 uv 自动安装 Python 3.11，无需系统预装 python3
+curl -fsSL "$OFFICIAL_INSTALLER" | bash -s -- --skip-setup
+
+# 刷新 PATH：官方安装器会把 hermes 和 uv 安装到 $HOME/.local/bin
+export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
+
+# 现在 python3 应该由 uv 提供（或系统已有）
+command -v python3 >/dev/null || fail "安装后未找到 python3，请手动安装 Python 3.11+。"
+command -v hermes >/dev/null || fail "Hermes 已安装但命令不在 PATH，请重新登录后再试。"
+
+# 用 python3 做完整校验
+info "校验配置..."
 python3 - "$TMP_PAYLOAD" <<'PY' || exit 1
 import json, re, sys
 p=json.load(open(sys.argv[1], encoding='utf-8'))
@@ -35,13 +58,6 @@ if p.get('base_url') and not str(p['base_url']).startswith(('http://','https://'
     raise SystemExit('API Base URL 必须以 http:// 或 https:// 开头')
 print('配置校验通过')
 PY
-
-info "安装 Hermes Agent（OneClick v${VERSION}）..."
-curl -fsSL "$OFFICIAL_INSTALLER" | bash -s -- --skip-setup
-
-# The official installer may update PATH in shell startup files.
-export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
-command -v hermes >/dev/null || fail "Hermes 已安装但命令不在 PATH，请重新登录后再试。"
 
 info "写入安全配置..."
 python3 - "$TMP_PAYLOAD" <<'PY'
