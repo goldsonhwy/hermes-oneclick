@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.3.0"
+VERSION="1.3.1"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
