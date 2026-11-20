@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.3.1"
+VERSION="1.4.0"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
@@ -91,6 +91,7 @@ updates={
  'TELEGRAM_BOT_TOKEN':p['telegram_token'],
  'TELEGRAM_ALLOWED_USERS':p.get('telegram_allowed_users',''),
  'TELEGRAM_HOME_CHANNEL':p.get('telegram_home_channel',''),
+ 'TELEGRAM_REQUIRE_MENTION':str(bool(p.get('require_mention',False))).lower(),
 }
 if p.get('api_key'): updates['OPENAI_API_KEY']=p['api_key']
 if p.get('base_url'): updates['OPENAI_BASE_URL']=p['base_url'].rstrip('/')
@@ -106,8 +107,6 @@ def cfg(key,value):
 cfg('model.default',p.get('model') or p.get('primary_model',''))
 cfg('model.provider',p.get('provider') or p.get('primary_provider','custom'))
 if p.get('base_url'): cfg('model.base_url',p['base_url'].rstrip('/'))
-if p.get('api_key'): cfg('model.api_key',p['api_key'])
-cfg('telegram.require_mention',str(bool(p.get('require_mention',False))).lower())
 
 # 附加端点 -> 写入 custom_providers
 extras = p.get('extra_endpoints', [])
@@ -119,6 +118,7 @@ if isinstance(extras, list) and extras:
                 'name': ep['name'],
                 'base_url': ep.get('base_url','').rstrip('/'),
                 'api_key': ep.get('api_key',''),
+                'models': [p.get('model') or p.get('primary_model','')] if (p.get('model') or p.get('primary_model','')) else [],
             })
     if custom:
         cfg('custom_providers', json.dumps(custom, ensure_ascii=False))

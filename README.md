@@ -7,7 +7,7 @@
 启用 GitHub Pages 后访问：`https://goldsonhwy.github.io/hermes-oneclick/`
 
 1. 在浏览器填写配置。
-2. 点击“生成安装命令”。
+2. 点击"生成安装命令"。
 3. 复制命令到 Ubuntu/Debian/CentOS 等 Linux VPS，以目标用户身份执行。
 4. 安装脚本会安装 Hermes、写入配置、安装并启动 Gateway 服务，并执行健康检查。
 
@@ -41,7 +41,17 @@ python3 tests/test_payload.py
 
 ## 版本
 
-当前版本：**v1.3.1**
+当前版本：**v1.4.0**
+
+安装脚本固定地址（WebUI 生成的命令指向此地址）：
+`https://raw.githubusercontent.com/goldsonhwy/hermes-oneclick/v1.4.0/install.sh`
+
+### v1.4.0 变更（修复上游 Hermes 版本更新导致的失效问题）
+
+- **修复（致命）**：移除失效的 `hermes config set telegram.require_mention` 调用（新版上游已无此顶层键，会导致脚本中途退出）。改为将 `TELEGRAM_REQUIRE_MENTION` 写入 `.env`，由 Telegram adapter 在运行时读取。
+- **修复**：API Key 不再双写。移除 `hermes config set model.api_key`，统一由 `.env` 的 `OPENAI_API_KEY` 提供，避免与上游新的密钥引用机制冲突。
+- **修复**：附加端点 `custom_providers` 每项补充 `models` 字段，使端点出现在可选模型列表、避免被静默忽略。
+- WebUI 生成的安装命令改为指向 `v1.4.0` tag 的固定脚本地址，旧版 `v1.3.1` 不受影响。
 
 ## 上游
 
