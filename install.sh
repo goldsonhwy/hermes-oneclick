@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-VERSION="1.3.1"
+VERSION="1.4.1"
 OFFICIAL_INSTALLER="https://hermes-agent.nousresearch.com/install.sh"
 
 info() { printf '\033[1;34m[Hermes OneClick]\033[0m %s\n' "$*"; }
@@ -49,6 +49,52 @@ if ! command -v python3 >/dev/null; then
   ok "python3 已安装。"
 fi
 
+# ── 安装 Hermes 模型管理菜单所需的系统依赖：jq 与 PyYAML ──
+# 官方安装器 --skip-setup 会跳过这些，导致管理菜单报
+# "jq: command not found" 与 "No module named 'yaml'"，无法获取模型列表。
+# 幂等：已就绪则跳过；在 PATH 刷新前后各调用一次，覆盖系统 python3 与 uv python3。
+
+_ensure_pyyaml() {
+  python3 -c 'import yaml' >/dev/null 2>&1 && return 0
+  info "安装 PyYAML（当前 python3: $(command -v python3)）..."
+  # 依次尝试：普通 pip → 允许系统环境 → uv → 系统包管理器
+  python3 -m pip install --quiet pyyaml 2>/dev/null \
+    || python3 -m pip install --quiet --break-system-packages pyyaml 2>/dev/null \
+    || { command -v uv >/dev/null 2>&1 && uv pip install --system --quiet pyyaml 2>/dev/null; } \
+    || { command -v apt-get >/dev/null 2>&1 && apt-get install -y -qq python3-yaml 2>/dev/null; } \
+    || { command -v yum >/dev/null 2>&1 && yum install -y python3-pyyaml 2>/dev/null; } \
+    || { command -v dnf >/dev/null 2>&1 && dnf install -y python3-pyyaml 2>/dev/null; } \
+    || { command -v apk >/dev/null 2>&1 && apk add --no-cache py3-pyyaml 2>/dev/null; } \
+    || true
+}
+
+install_menu_deps() {
+  local need_jq=0
+  command -v jq >/dev/null 2>&1 || need_jq=1
+  if (( need_jq )); then
+    info "安装 jq..."
+    if command -v apt-get >/dev/null 2>&1; then
+      apt-get update -qq && apt-get install -y -qq jq
+    elif command -v yum >/dev/null 2>&1; then
+      yum install -y jq
+    elif command -v dnf >/dev/null 2>&1; then
+      dnf install -y jq
+    elif command -v apk >/dev/null 2>&1; then
+      apk add --no-cache jq
+    else
+      info "未识别包管理器，请手动安装 jq。"
+    fi
+  fi
+  _ensure_pyyaml
+  if command -v jq >/dev/null 2>&1 && python3 -c 'import yaml' >/dev/null 2>&1; then
+    ok "管理依赖 jq / PyYAML 已就绪。"
+  else
+    info "部分管理依赖未就绪，模型管理菜单可能受限，请按报错手动补装。"
+  fi
+}
+
+install_menu_deps
+
 info "安装 Hermes Agent（OneClick v${VERSION}）..."
 curl -fsSL "$OFFICIAL_INSTALLER" | bash -s -- --skip-setup
 
@@ -58,6 +104,9 @@ export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 # 现在 python3 应该由 uv 提供（或系统已有）
 command -v python3 >/dev/null || fail "安装后未找到 python3，请手动安装 Python 3.11+。"
 command -v hermes >/dev/null || fail "Hermes 已安装但命令不在 PATH，请重新登录后再试。"
+
+# PATH 刷新后 python3 可能已切换为 uv 版本，再补一次依赖以确保该 python 也有 PyYAML
+install_menu_deps
 
 # 用 python3 做完整校验
 info "校验配置..."
@@ -91,6 +140,7 @@ updates={
  'TELEGRAM_BOT_TOKEN':p['telegram_token'],
  'TELEGRAM_ALLOWED_USERS':p.get('telegram_allowed_users',''),
  'TELEGRAM_HOME_CHANNEL':p.get('telegram_home_channel',''),
+ 'TELEGRAM_REQUIRE_MENTION':str(bool(p.get('require_mention',False))).lower(),
 }
 if p.get('api_key'): updates['OPENAI_API_KEY']=p['api_key']
 if p.get('base_url'): updates['OPENAI_BASE_URL']=p['base_url'].rstrip('/')
@@ -106,8 +156,6 @@ def cfg(key,value):
 cfg('model.default',p.get('model') or p.get('primary_model',''))
 cfg('model.provider',p.get('provider') or p.get('primary_provider','custom'))
 if p.get('base_url'): cfg('model.base_url',p['base_url'].rstrip('/'))
-if p.get('api_key'): cfg('model.api_key',p['api_key'])
-cfg('telegram.require_mention',str(bool(p.get('require_mention',False))).lower())
 
 # 附加端点 -> 写入 custom_providers
 extras = p.get('extra_endpoints', [])
@@ -119,6 +167,7 @@ if isinstance(extras, list) and extras:
                 'name': ep['name'],
                 'base_url': ep.get('base_url','').rstrip('/'),
                 'api_key': ep.get('api_key',''),
+                'models': [p.get('model') or p.get('primary_model','')] if (p.get('model') or p.get('primary_model','')) else [],
             })
     if custom:
         cfg('custom_providers', json.dumps(custom, ensure_ascii=False))
